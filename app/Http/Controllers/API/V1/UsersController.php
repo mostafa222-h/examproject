@@ -1,35 +1,50 @@
 <?php
 namespace App\Http\Controllers\API\V1;
 
+use App\Http\Controllers\API\Contracts\ApiController;
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\UserRepositoryInterface;
+use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class UsersController extends ApiController
 {
     public function __construct(private UserRepositoryInterface $userRepository)
     {
         
     }
-    public function store()
+    public function store(Request $request)
     {
-        $this->userRepository->create([
-            'full_name' => 'Mostafa Hekmati' ,
-            'email' => 'mostafa_gbhz@yahoo.com' ,
-            'mobile' => '09925961712' ,
-            'password' => '12345678' ,
+        $this->validate($request,[
+            'full_name' => 'required|string|min:3|max:255' ,
+            'email' => 'required|email' ,
+            'mobile' => 'required|string|digits:11' ,
+            'password' => 'required' ,
         ]);
-        return response()->json(
-            [
-            'success' => true ,
-            'message' => 'User created successfully' ,
-           
-            'data' => [
-                'full_name' => 'Mostafa Hekmati' ,
-                'email' => 'mostafa_gbhz@yahoo.com' ,
-                'mobile' => '09925961712' ,
-                'password' => '12345678' ,
-            ],
-        ]
-    )->setStatusCode(201);
+         $this->userRepository->create([
+            'full_name' => $request->full_name ,
+            'email' => $request->email,
+            'mobile' => $request->mobile ,
+            'password' => app('hash')->make($request->password)  ,
+         ]);
+
+         return $this->respondCreated('User created successfully.' ,[
+            'full_name' => $request->full_name ,
+            'email' => $request->email,
+            'mobile' => $request->mobile ,
+            'password' => $request->password ,
+        ]);
+          /*  return response()->json(
+                [
+                'success' => true ,
+                'message' => 'User created successfully' ,
+            
+                'data' => [
+                    'full_name' => $request->full_name ,
+                    'email' => $request->email,
+                    'mobile' => $request->mobile ,
+                    'password' => $request->password ,
+                ],
+            ]
+        )->setStatusCode(201); */
     }
 }

@@ -29,7 +29,29 @@ class JsonBaseRepository implements RepositoryInterface
     }
     public function update(int $id , array $data)
     {
-      
+   
+      $users = json_decode(file_get_contents('users.json'),true);
+      foreach($users as $key => $user)
+      {
+        if($user['id'] == $id)
+        {
+          $user['fullname'] = $data['full_name'] ?? $user['fullname'];
+          $user['mobile'] = $data['mobile'] ?? $user['mobile'];
+          $user['email'] = $data['email'] ?? $user['email'] ;
+          $user['password'] = $data['password'] ?? $user['password'] ;
+
+          
+          unset($users[$key]);
+          array_push($users,$user);
+          if(file_exists('users.json'))
+          {
+            unlink('users.json');
+          }
+         
+          file_put_contents('users.json',json_encode($users));
+          break;
+        }
+      }
     }
 
 

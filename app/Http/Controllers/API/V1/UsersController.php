@@ -47,4 +47,28 @@ class UsersController extends ApiController
             ]
         )->setStatusCode(201); */
     }
+
+    public function updateInfo(Request $request)
+    {
+        $this->validate($request,[
+            'id' => 'required|string' ,
+            'full_name' => 'required|string|min:3|max:255' ,
+            'email' => 'required|email' ,
+            'mobile' => 'required|string|digits:11' ,
+            
+        ]);
+
+        $this->userRepository->update($request->id,[
+            'email' => $request->email,
+            'mobile' => $request->mobile ,
+            'password' => app('hash')->make($request->password) 
+        ]);
+
+        return $this->respondSuccess('User updated successfully.' ,[
+            'full_name' => $request->full_name ,
+            'email' => $request->email,
+            'mobile' => $request->mobile ,
+           
+        ]);
+    }
 }

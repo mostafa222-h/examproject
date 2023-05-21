@@ -10,18 +10,18 @@ class JsonBaseRepository implements RepositoryInterface
     
     public function create(array $data)
     {
-      if(file_exists('users.json'))
+      if(file_exists(base_path() . '/users.json'))
       {
-        $users = json_decode(file_get_contents('users.json'),true);
+        $users = json_decode(file_get_contents(base_path() . '/users.json'),true);
         $data['id'] = rand(1,1000);
         array_push($users,$data);
-        file_put_contents('users.json',json_encode($users));
+        file_put_contents(base_path() . '/users.json',json_encode($users));
       }else
       {
         $users = [];
         $data['id'] = rand(1,1000);
         array_push($users,$data);
-        file_put_contents('users.json',json_encode($users));
+        file_put_contents(base_path() . '/users.json',json_encode($users));
       }
      
 
@@ -29,13 +29,13 @@ class JsonBaseRepository implements RepositoryInterface
     }
     public function update(int $id , array $data)
     {
-   
-      $users = json_decode(file_get_contents('users.json'),true);
+  
+      $users = json_decode(file_get_contents(base_path() . '/users.json'),true);
       foreach($users as $key => $user)
       {
         if($user['id'] == $id)
         {
-          $user['fullname'] = $data['full_name'] ?? $user['fullname'];
+          $user['full_name'] = $data['full_name'] ?? $user['full_name'];
           $user['mobile'] = $data['mobile'] ?? $user['mobile'];
           $user['email'] = $data['email'] ?? $user['email'] ;
           $user['password'] = $data['password'] ?? $user['password'] ;
@@ -43,12 +43,12 @@ class JsonBaseRepository implements RepositoryInterface
           
           unset($users[$key]);
           array_push($users,$user);
-          if(file_exists('users.json'))
+          if(file_exists(base_path() . '/users.json'))
           {
-            unlink('users.json');
+            unlink(base_path() . '/users.json');
           }
          
-          file_put_contents('users.json',json_encode($users));
+          file_put_contents(base_path() . '/users.json',json_encode($users));
           break;
         }
       }

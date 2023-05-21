@@ -70,9 +70,9 @@ class UsersTest extends TestCase
     public function test_should_update_password()
     {
         $response = $this->call('PUT','api/v1/users/change-password',[
-            'id' => '498',
-            'password' => '44444444' ,
-            'password_repeat' => '44444444' ,
+            'id' => '904',
+            'password' => '33333333' ,
+            'password_repeat' => '33333333' ,
            
 
         ]);

@@ -1,6 +1,8 @@
 <?php
 namespace App\Repositories\Json;
 
+use App\Entities\User\UserEntity;
+use App\Entities\User\UserJsonEntity;
 use App\Models\User;
 use App\Repositories\Contracts\RepositoryInterface;
 use PhpParser\Node\Expr\AssignOp\Mod;
@@ -25,7 +27,7 @@ class JsonBaseRepository implements RepositoryInterface
       }
      
 
-      
+      return $data ;
     }
     public function update(int $id , array $data)
     {
@@ -96,7 +98,16 @@ class JsonBaseRepository implements RepositoryInterface
 
     public function find(int $id)
     {
-       
+      $users = json_decode(file_get_contents(base_path() . '/users.json'),true);
+      foreach ($users as $user) {
+        if($user['id'] == $id)
+        {
+          return $user ;
+        }
+      }
+
+      return [];
+     
     }
 
     public function paginate(string $search = null , int $page , int $pagesize = 20  )

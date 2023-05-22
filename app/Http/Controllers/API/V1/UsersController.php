@@ -25,24 +25,24 @@ class UsersController extends ApiController
     }
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'full_name' => 'required|string|min:3|max:255' ,
-            'email' => 'required|email' ,
-            'mobile' => 'required|string|digits:11' ,
-            'password' => 'required' ,
-        ]);
-         $this->userRepository->create([
-            'full_name' => $request->full_name ,
-            'email' => $request->email,
-            'mobile' => $request->mobile ,
-            'password' => app('hash')->make($request->password)  ,
-         ]);
+         $this->validate($request,[
+             'full_name' => 'required|string|min:3|max:255' ,
+             'email' => 'required|email' ,
+             'mobile' => 'required|string|digits:11' ,
+             'password' => 'required' ,
+                                    ]);
+         $newUser =  $this->userRepository->create([
+                    'full_name' => $request->full_name ,
+                    'email' => $request->email,
+                    'mobile' => $request->mobile ,
+                    'password' => app('hash')->make($request->password)  ,
+                ]);
 
          return $this->respondCreated('User created successfully.' ,[
-            'full_name' => $request->full_name ,
-            'email' => $request->email,
-            'mobile' => $request->mobile ,
-            'password' => $request->password ,
+            'full_name' => $newUser->getFullName() ,
+            'email' =>  $newUser->getEmail(),
+            'mobile' => $newUser->getMobile() ,
+            'password' => $newUser->getPassword() ,
         ]);
           /*  return response()->json(
                 [

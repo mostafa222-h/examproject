@@ -88,4 +88,74 @@ class UsersTest extends TestCase
             ],
         ]);
     }
+
+    public function test_it_must_throw_a_exception_if_we_dont_send_parameters_to_update_password()
+    {
+        $response = $this->call('PUT','api/v1/users/change-password',[ ]);
+
+        $this->assertEquals(422,$response->status());
+
+    }
+
+    public function test_should_delete_a_user()
+    {
+        $response = $this->call('DELETE','api/v1/users',[
+            'id' => '805',
+        ]);
+        $this->assertEquals(200,$response->status());
+        $this->seeJsonStructure([
+            'success' ,
+            'message'  ,
+           
+            'data' => [],
+        ]);
+    }
+
+    public function test_should_get_users()
+    {
+        $pagesize = 3 ;
+        $response = $this->call('GET','api/v1/users',[
+            'page' => '1',
+            'pagesize' => $pagesize
+        ]);
+
+        $data = json_decode($response->getContent(),true);
+
+        $this->assertEquals($pagesize,count($data['data']));
+
+        $this->assertEquals(200,$response->status());
+
+        $this->seeJsonStructure([
+            'success' ,
+            'message'  ,
+           
+            'data',
+        ]);
+    }
+
+
+
+    public function test_should_get_filtered_users()
+    {
+        $pagesize = 3 ;
+        $userEmail = 'mostafa_gbhz@yahoo.com' ;
+        $response = $this->call('GET','api/v1/users',[
+            'search' =>  $userEmail ,
+            'page' => '1',
+            'pagesize' => $pagesize
+        ]);
+
+        $data = json_decode($response->getContent(),true);
+
+       $this->assertEquals($data['data']['email'], $userEmail);
+
+        $this->assertEquals(200,$response->status());
+
+        $this->seeJsonStructure([
+            'success' ,
+            'message'  ,
+           
+            'data',
+        ]);
+    }
 }

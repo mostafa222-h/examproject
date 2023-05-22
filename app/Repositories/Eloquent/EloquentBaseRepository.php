@@ -27,8 +27,7 @@ class EloquentBaseRepository implements RepositoryInterface
         }
         return $query->get();
     }
-    
-    public function delete(array $where)
+    public function deleteBy(array $where)
     {
         $query =  $this->model::query();
         foreach($where as $key => $value)
@@ -36,6 +35,10 @@ class EloquentBaseRepository implements RepositoryInterface
             $query->where($key,$value);
         }
         return $query->delete();
+    }
+    public function delete(int $id)
+    {
+        return $this->model::where('id',$id)->delete();
     }
 
     public function find(int $id)

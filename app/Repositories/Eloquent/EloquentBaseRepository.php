@@ -45,4 +45,9 @@ class EloquentBaseRepository implements RepositoryInterface
     {
         return $this->model::find($id);
     }
+
+    public function paginate(string $search = null , int $page , int $pagesize = 20)
+    {
+        
+    }
 }

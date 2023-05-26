@@ -16,16 +16,18 @@ class UsersTest extends TestCase
     }
     public function test_should_create_a_new_user()
     {
-        //start coding  the test from the paths section.
-        $response = $this->call('POST','api/v1/users',[
-            'full_name' => 'Mostafa Hekmati' ,
+        $newUser = [
+             'full_name' => 'Mostafa Hekmati' ,
             'email' => 'mostafa_gbhz@yahoo.com' ,
             'mobile' => '09925961712' ,
             'password' => '12345678' ,
-
-        ]);
+        ];
+        //start coding  the test from the paths section.
+        $response = $this->call('POST','api/v1/users',$newUser);
 
         $this->assertEquals(201,$response->status());
+        $newUser['password'] = json_decode($response->getContent(),true)['data']['password'];
+        $this->seeInDatabase('users',$newUser);
         $this->seeJsonStructure([
             'success' ,
             'message'  ,

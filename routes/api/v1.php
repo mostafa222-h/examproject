@@ -35,10 +35,19 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
 
     $router->group(['prefix' => 'questions'], function () use ($router) {
-        //$router->get('','API\V1\QuestionsController@index');
+        $router->get('','API\V1\QuestionsController@index');
         $router->post('','API\V1\QuestionsController@store');
-      // $router->delete('','API\V1\QuestionsController@delete');
-       // $router->put('','API\V1\QuestionsController@update');
+        $router->delete('','API\V1\QuestionsController@delete');
+        $router->put('','API\V1\QuestionsController@update');
+      
+    });
+
+    
+    $router->group(['prefix' => 'answer-sheets'], function () use ($router) {
+        $router->get('','API\V1\AnswerSheetsController@index');
+        $router->post('','API\V1\AnswerSheetsController@store');
+        $router->delete('','API\V1\AnswerSheetsController@delete');
+        //$router->put('','API\V1\AnswerSheetsController@update');
       
     });
 

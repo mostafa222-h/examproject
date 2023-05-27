@@ -25,14 +25,14 @@ class QuizzesController extends ApiController
    
     public function index(Request $request)
     {
-        // $this->validate($request,[
-        //     'search' => 'nullable|string' ,
-        //     'page' => 'required|numeric' ,
-        //     'pagesize' => 'nullable|numeric'
-        // ]);
+        $this->validate($request,[
+            'search' => 'nullable|string' ,
+            'page' => 'required|numeric' ,
+            'pagesize' => 'nullable|numeric'
+        ]);
 
-        // $quizzes = $this->quizzeRepository->paginate($request->search,$request->page,$request->pagesize ?? 20, ['title','description' , 'start_date','duration']);
-        // return $this->respondSuccess('ALL  Quizze',$quizzes);
+        $quizzes = $this->questionRepository->paginate($request->search,$request->page,$request->pagesize ?? 20, ['title','score' , 'is_active','options','quizze_id']);
+        return $this->respondSuccess('ALL  Questions ',$quizzes);
     }
     public function store(Request $request)
     {
@@ -86,71 +86,66 @@ class QuizzesController extends ApiController
 
     public function update(Request $request)
     {
-        // $this->validate($request,[
-        //      'id' => 'required|numeric' ,
-        //      'category_id' => 'required|numeric',
-        //      'title' => 'required|string' ,
-        //      'description' => 'required|string' ,
-        //      'start_date' => 'required|date' ,
-        //      'duration' => 'required|date',
-        //      'is_active' => 'required|bool'
-        // ]);
-        // try{
+        $this->validate($request,[
+             'id' => 'required|numeric' ,
+             'title' => 'required|string',
+             'score' => 'required|numeric' ,
+             'is_active' => 'required|numeric' ,
+             'quizze_id' => 'required|numeric' ,
+             'options' => 'required|json' ,
+        ]);
 
-        //     $startDate = Carbon::parse($request->start_date);
-        //     $duration = Carbon::parse($request->duration);
-   
-        //     if($duration->timestamp  < $startDate->timestamp )
-        //     {
-        //        return $this->respondInvalidValidation('The start date must be greater than the test time.');
-        //     }
+        if(! $this->questionRepository->find($request->id))
+        {
+            return $this->respondNotFound('Question not found');
+        }
+        try{
 
-        //     $updatedQuizz =  $this->quizzeRepository->update($request->id,[
+          
+            $updatedQuestion =  $this->questionRepository->update($request->id,[
                         
-        //         'category_id' => $request->category_id ,
-        //         'title' => $request->title ,
-        //         'description' => $request->description,
-        //         'start_date' => $startDate->format('Y-m-d') ,
-        //         'duration' => $duration,
-        //         'is_active' => $request->is_active
+                'title' => $request->title ,
+                'score' => $request->score ,
+                'is_active' => $request->is_active,
+                'quizze_id' => $request->quizze_id ,
+                'options' =>$request->options,
                         
-        //     ]);
+            ]);
 
-        // }catch(\Exception $e){
-        //     return $this->respondInternalError('Quizze Not Updated.');
-        // }
+        }catch(\Exception $e){
+            return $this->respondInternalError('Question Not Updated.');
+        }
 
     
-        // return $this->respondSuccess('Quizze updated successfully.' ,[
-        //     'category_id' =>  $updatedQuizz->getCategoryId() ,
-        //     'title' =>   $updatedQuizz->getTitle(),
-        //     'description' =>   $updatedQuizz->getDescription(),
-        //     'start_date' =>   $updatedQuizz->getStartDate(),
-        //     'duration' => Carbon::parse($updatedQuizz->getDuration())->timestamp  ,
-        //     'is_active' => $updatedQuizz->getIsActive()
+        return $this->respondSuccess('Question updated successfully.' ,[
+            'title' =>  $updatedQuestion->getTitle() ,
+            'score' =>   $updatedQuestion->getScore(),
+            'is_active' =>   $updatedQuestion->getIsActive(),
+            'quizze_id' =>   $updatedQuestion->getQuizzeId(),
+            'options' => json_encode($updatedQuestion->getOptions())  ,
 
             
             
            
-        // ]);
+        ]);
     }
    
 
     public function delete(Request $request)
     {
-    //     $this->validate($request,[
-    //         'id' => 'required|numeric' ,
-    //     ]);
-    //     if(!$this->quizzeRepository->find($request->id))
-    //     {
-    //         return $this->respondNotFound('There is no quizze with this ID.');
-    //     }
+        $this->validate($request,[
+            'id' => 'required|numeric' ,
+        ]);
+        if(!$this->questionRepository->find($request->id))
+        {
+            return $this->respondNotFound('There is no question with this ID.');
+        }
 
-    //     if(!$this->quizzeRepository->delete($request->id))
-    //     {
-    //         return $this->respondInternalError('There is no quizze with this ID.');
-    //     }
+        if(!$this->questionRepository->delete($request->id))
+        {
+            return $this->respondInternalError('There is no question with this ID.');
+        }
 
-    //     return $this->respondSuccess('quizze Deleted  successfully.',[]);
+        return $this->respondSuccess('question Deleted  successfully.',[]);
       }
 }

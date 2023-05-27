@@ -2,21 +2,23 @@
 
 namespace App\Repositories\Eloquent;
 
+use App\Entities\AnswerSheet\AnswerSheetEloquentEntity;
 use App\Entities\Question\QuestionEloquentEntity;
-use App\Models\Question;
+use App\Models\AnswerSheet;
 
+use App\Repositories\Contracts\AnswerSheetRepositoryInterface;
 use App\Repositories\Contracts\QuestionRepositoryInterface;
 
 
-class EloquentQuestionRepository extends EloquentBaseRepository implements QuestionRepositoryInterface
+class EloquentAnswerSheetRepository extends EloquentBaseRepository implements AnswerSheetRepositoryInterface
 {
-    protected $model = Question::class;
+    protected $model = AnswerSheet::class;
 
 
     public function create(array $data)
     {
-        $createdQuizze=  parent::create($data);
-        return new QuestionEloquentEntity($createdQuizze);
+        $createdAnswerSheet=  parent::create($data);
+        return new AnswerSheetEloquentEntity($createdAnswerSheet);
     }
 
     public function update(int $id, array $data)
